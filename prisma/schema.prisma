@@ -20,11 +20,11 @@ model Comment {
   authorId  Int
   post      Post      @relation(fields: [postId], references: [id])
   postId    Int
-  upvotes   Int
-  downvotes Int
+  upvotes   Int       @default(0)
+  downvotes Int       @default(0)
   parent    Comment?  @relation("ChildComments", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   parentId  Int?
-  children  Comment[] @relation("ChildComments")
+  replies  Comment[]  @relation("ChildComments")
 
   @@index([parentId])
   @@index([postId])
@@ -49,8 +49,8 @@ model Post {
   author    User      @relation(fields: [authorId], references: [id])
   authorId  Int
   comments  Comment[]
-  upvotes   Int
-  downvotes Int
+  upvotes   Int       @default(0)
+  downvotes Int       @default(0)
 
   @@index([authorId])
 }
