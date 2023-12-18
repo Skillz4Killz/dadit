@@ -25,7 +25,7 @@ export default async function Home() {
     <main className="flex">
       <SideBar username={user ? `${user.firstName} ${user.lastName}` : null} />
 
-      <div className="absolute left-[calc(50%_-_600px/2)] top-10 flex h-[950px] w-[600px] flex-col items-start gap-10 p-0">
+      <div className="no-scrollbar absolute left-[calc(50%_-_600px/2)] top-10 flex h-[950px] w-[600px] flex-col items-start gap-10 overflow-y-scroll p-0">
         <SignedIn>
           <CreatePost
             initials={
