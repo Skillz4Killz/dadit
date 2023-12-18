@@ -6,16 +6,16 @@ import { Separator } from "~/components/ui/separator";
 import { UpVote, DownVote } from "~/components/icons/votes";
 import { timeAgo } from "~/lib/utils";
 import SideBar from "~/components/ui/Sidebar";
-import { auth } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs";
 
 export default async function Home() {
   const posts = await api.post.getLatest.query();
-  // Get the userId from auth() -- if null, the user is not logged in
-  const { userId } = auth();
-
+  const user = await currentUser();
+  console.log("user", user);
+  
   return (
     <main className="flex">
-      <SideBar isLoggedIn={!!userId} />
+      <SideBar username={user ? `${user.firstName} ${user.lastName}` : null} />
 
       <div className="absolute left-[calc(50%_-_600px/2)] top-10 flex h-[950px] w-[600px] flex-col items-start gap-10 p-0">
         {posts.map((post) => (
