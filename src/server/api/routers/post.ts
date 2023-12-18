@@ -35,10 +35,28 @@ export const postRouter = createTRPCRouter({
       take: 20,
       include: {
         author: true,
-        votes: true
+        votes: true,
       },
     });
   }),
+
+  getMyLatest: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      return ctx.db.post.findMany({
+        orderBy: { createdAt: "desc" },
+        where: { authorId: input.userId },
+        take: 20,
+        include: {
+          author: true,
+          votes: true,
+        },
+      });
+    }),
 
   upsertUser: publicProcedure
     .input(

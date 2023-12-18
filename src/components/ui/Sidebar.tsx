@@ -37,7 +37,7 @@ export default function SideBar(props: SideBarProps) {
               </div>
             </Link>
             <div className="cursor-pointer">
-              <Link href={props.username ? "/sign-in" : "/me"}>
+              <Link href={props.username ? "/me" : "/sign-in"}>
                 <div
                   className={`flex h-12 w-60 flex-row items-center gap-4 rounded-xl px-4 py-3 ${
                     pathname === "/me" ? "bg-gray-50" : ""

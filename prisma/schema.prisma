@@ -34,7 +34,7 @@ model Comment {
 model User {
   id        Int       @id @default(autoincrement())
   userId    String    @unique
-  username  String    @unique
+  username  String
   avatarURL String?
   posts     Post[]
   comments  Comment[]
