@@ -16,7 +16,7 @@ export const postRouter = createTRPCRouter({
       z.object({
         title: z.string().min(10).max(100),
         content: z.string().min(10).max(4000),
-        authorId: z.number(),
+        authorId: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -41,4 +41,30 @@ export const postRouter = createTRPCRouter({
       },
     });
   }),
+
+  upsertUser: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        username: z.string(),
+        avatarURL: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // simulate a slow db call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      return ctx.db.user.upsert({
+        where: { userId: input.userId },
+        create: {
+          userId: input.userId,
+          username: input.username,
+          avatarURL: input.avatarURL,
+        },
+        update: {
+          username: input.username,
+          avatarURL: input.avatarURL,
+        },
+      });
+    }),
 });

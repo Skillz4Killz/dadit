@@ -6,18 +6,35 @@ import { Separator } from "~/components/ui/separator";
 import { UpVote, DownVote } from "~/components/icons/votes";
 import { timeAgo } from "~/lib/utils";
 import SideBar from "~/components/ui/Sidebar";
-import { currentUser } from "@clerk/nextjs";
+import { SignedIn, currentUser } from "@clerk/nextjs";
+import CreatePost from "~/components/ui/CreatePost";
 
 export default async function Home() {
   const posts = await api.post.getLatest.query();
   const user = await currentUser();
   console.log("user", user);
-  
+
+  if (user) {
+    await api.post.upsertUser.mutate({
+      avatarURL: user.imageUrl,
+      userId: user.id,
+      username: `${user.username ?? user.firstName}`,
+    });
+  }
+
   return (
     <main className="flex">
       <SideBar username={user ? `${user.firstName} ${user.lastName}` : null} />
 
       <div className="absolute left-[calc(50%_-_600px/2)] top-10 flex h-[950px] w-[600px] flex-col items-start gap-10 p-0">
+        <SignedIn>
+          <CreatePost
+            initials={
+              user ? `${user.firstName?.[0]}${user.lastName?.[0]}` : "ZA"
+            }
+            avatarURL={user?.imageUrl ?? null}
+          />
+        </SignedIn>
         {posts.map((post) => (
           <div key={post.id}>
             <div className="h-[84px] w-[600px] gap-4 p-0">
@@ -36,15 +53,17 @@ export default async function Home() {
                 <div className="flex flex-col">
                   <div className="flex items-center gap-2 p-0">
                     <Avatar className="h-6 w-6 rounded-[100px]">
-                      {/* TODO: dynamic ~ avatar logo */}
-                      <AvatarImage src="https://github.com/shadcn.png" />
+                      <AvatarImage
+                        src={
+                          post.author.avatarURL ??
+                          "https://github.com/shadcn.png"
+                        }
+                      />
                       <AvatarFallback>
                         {post.author.username.toUpperCase().substring(0, 2)}
                       </AvatarFallback>
                     </Avatar>
-                    {/* Posted By text */}
                     <p className="text-sm font-normal not-italic leading-5 text-gray-600">
-                      {/* TODO: dynamic ~ time ago */}
                       Posted by {post.author.username} {timeAgo(post.createdAt)}
                     </p>
                   </div>
