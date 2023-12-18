@@ -21,7 +21,11 @@ export default function SideBar(props: SideBarProps) {
         <div className="flex h-screen flex-col justify-between">
           <div>
             <Link href={"/"}>
-              <div className="flex h-12 w-60 flex-row items-center gap-4 rounded-xl bg-gray-50 px-4 py-3">
+              <div
+                className={`flex h-12 w-60 flex-row items-center gap-4 rounded-xl px-4 py-3 ${
+                  pathname === "/" ? "bg-gray-50" : ""
+                }`}
+              >
                 <HomeIcon active={pathname === "/"} />
                 <p
                   className={`text-base font-medium not-italic leading-6 tracking-[-0.01em] ${
@@ -34,7 +38,11 @@ export default function SideBar(props: SideBarProps) {
             </Link>
             <div className="cursor-pointer">
               <Link href={props.username ? "/sign-in" : "/me"}>
-                <div className="flex h-12 w-60 cursor-pointer flex-row items-center gap-4 rounded-xl bg-gray-50 px-4 py-3">
+                <div
+                  className={`flex h-12 w-60 flex-row items-center gap-4 rounded-xl px-4 py-3 ${
+                    pathname === "/me" ? "bg-gray-50" : ""
+                  }`}
+                >
                   <SignedIn>
                     <MyPostsIcon />
                     <p

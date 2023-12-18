@@ -20,9 +20,6 @@ export const postRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // simulate a slow db call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
       return ctx.db.post.create({
         data: {
           title: input.title,
@@ -38,6 +35,7 @@ export const postRouter = createTRPCRouter({
       take: 20,
       include: {
         author: true,
+        votes: true
       },
     });
   }),
@@ -51,9 +49,6 @@ export const postRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // simulate a slow db call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
       return ctx.db.user.upsert({
         where: { userId: input.userId },
         create: {
@@ -64,6 +59,28 @@ export const postRouter = createTRPCRouter({
         update: {
           username: input.username,
           avatarURL: input.avatarURL,
+        },
+      });
+    }),
+
+  upsertVote: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        postId: z.number(),
+        upvoted: z.boolean(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.vote.upsert({
+        where: { voteId: { userId: input.userId, postId: input.postId } },
+        create: {
+          userId: input.userId,
+          postId: input.postId,
+          upvoted: input.upvoted,
+        },
+        update: {
+          upvoted: input.upvoted,
         },
       });
     }),

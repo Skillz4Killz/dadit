@@ -3,16 +3,15 @@ import Link from "next/link";
 import { api } from "~/trpc/server";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Separator } from "~/components/ui/separator";
-import { UpVote, DownVote } from "~/components/icons/votes";
 import { timeAgo } from "~/lib/utils";
 import SideBar from "~/components/ui/Sidebar";
 import { SignedIn, currentUser } from "@clerk/nextjs";
 import CreatePost from "~/components/ui/CreatePost";
+import { DownVoter, UpVoter } from "./_components/upvote";
 
 export default async function Home() {
   const posts = await api.post.getLatest.query();
   const user = await currentUser();
-  console.log("user", user);
 
   if (user) {
     await api.post.upsertUser.mutate({
@@ -39,14 +38,25 @@ export default async function Home() {
           <div key={post.id}>
             <div className="h-[84px] w-[600px] gap-4 p-0">
               <div className="flex items-start gap-2">
-                {/* Vote Counter */}
-                {/* TODO: mark vote active when upvoted by user */}
                 <div className="flex h-[84px] flex-col items-center gap-1">
-                  <UpVote />
+                  <UpVoter
+                    postId={post.id}
+                    active={post.votes.some(
+                      (vote) => vote.upvoted && user.id === vote.userId,
+                    )}
+                  />
                   <p className="text-base  font-medium leading-6 text-gray-800">
-                    {post.upvotes - post.downvotes}
+                    {post.votes.reduce(
+                      (prev, vote) => (vote.upvoted ? prev + 1 : prev - 1),
+                      0,
+                    )}
                   </p>
-                  <DownVote />
+                  <DownVoter
+                    postId={post.id}
+                    active={post.votes.some(
+                      (vote) => !vote.upvoted && user.id === vote.userId,
+                    )}
+                  />
                 </div>
 
                 {/* Post Details */}

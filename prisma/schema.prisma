@@ -24,7 +24,7 @@ model Comment {
   downvotes Int       @default(0)
   parent    Comment?  @relation("ChildComments", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   parentId  Int?
-  replies  Comment[]  @relation("ChildComments")
+  replies   Comment[] @relation("ChildComments")
 
   @@index([parentId])
   @@index([postId])
@@ -32,12 +32,12 @@ model Comment {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  userId   String    @unique
-  username String    @unique
+  id        Int       @id @default(autoincrement())
+  userId    String    @unique
+  username  String    @unique
   avatarURL String?
-  posts    Post[]
-  comments Comment[]
+  posts     Post[]
+  comments  Comment[]
 }
 
 model Post {
@@ -48,6 +48,7 @@ model Post {
   updatedAt DateTime  @updatedAt
   author    User      @relation(fields: [authorId], references: [userId])
   authorId  String
+  votes     Vote[]
   comments  Comment[]
   upvotes   Int       @default(0)
   downvotes Int       @default(0)
@@ -55,3 +56,12 @@ model Post {
   @@index([authorId])
 }
 
+model Vote {
+  userId  String
+  upvoted Boolean
+  postId  Int
+  Post    Post    @relation(fields: [postId], references: [id])
+
+  @@id(name: "voteId", [userId, postId])
+  @@index([postId])
+}
