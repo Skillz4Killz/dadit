@@ -13,7 +13,9 @@ export default async function PostPage({ params }: { params: { id: string } }) {
     throw new Error(`Invalid post id! ${params.id}`);
   }
 
+  console.log('in post page, getting user')
   const user = await currentUser();
+  console.log('user found', user)
   const post = await api.post.getPostWithComments.query({ postId });
   if (!post) {
     throw new Error(`Post not found! ${params.id}`);

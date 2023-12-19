@@ -71,7 +71,7 @@ export default function SideBar(props: SideBarProps) {
 
           <div className="mb-12 flex gap-4 px-4 py-3">
             <div className="h-8 w-8 rounded-[100px]">
-              <UserButton />
+              <UserButton afterSignOutUrl="/" />
             </div>
             <div className="flex items-center justify-center">
               <p className="h-6 w-28 text-left text-base font-medium leading-6 tracking-[-0.01em] text-gray-700">
