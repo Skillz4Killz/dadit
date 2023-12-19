@@ -1,11 +1,12 @@
-import type { Post } from "@prisma/client";
+import type { Post, User, Vote } from "@prisma/client";
 import Link from "next/link";
 import { UpVoter, DownVoter } from "~/app/_components/upvote";
 import { timeAgo } from "~/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
 export interface PostProps {
-    post: Post;
+    post: Post & { votes: Vote[]; author: User; };
+    currentUserId?: string;
 }
 
 export default function PostBox(props: PostProps) {
@@ -16,7 +17,7 @@ export default function PostBox(props: PostProps) {
           <UpVoter
             postId={props.post.id}
             active={props.post.votes.some(
-              (vote) => vote.upvoted && props.user?.id === vote.userId,
+              (vote) => vote.upvoted && props.currentUserId === vote.userId,
             )}
           />
           <p className="text-base  font-medium leading-6 text-gray-800">
@@ -28,7 +29,7 @@ export default function PostBox(props: PostProps) {
           <DownVoter
             postId={props.post.id}
             active={props.post.votes.some(
-              (vote) => !vote.upvoted && props.user?.id === vote.userId,
+              (vote) => !vote.upvoted && props.currentUserId === vote.userId,
             )}
           />
         </div>

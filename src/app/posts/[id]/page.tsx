@@ -39,7 +39,7 @@ export default async function PostPage({ params }: { params: { id: string } }) {
           </p>
         </div>
 
-        <PostBox post={post} />
+        <PostBox post={post} currentUserId={user?.id} />
         <SignedIn>
           <CreateCommentForm
             initials={

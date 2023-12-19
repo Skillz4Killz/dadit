@@ -12,15 +12,6 @@ const inter = Inter({
   variable: "--font-sans",
 });
 
-export const localization = {
-  signUp: {
-    start: {
-      title: "Join the best community ever",
-      subtitle: "Create an account today",
-    },
-  },
-} as const;
-
 export const metadata = {
   title: "Dadit - Reddit For Dads",
   description: "Dad jokes made by dads, for dads!",
@@ -32,6 +23,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const localization = {
+    signUp: {
+      start: {
+        title: "Join the best community ever",
+        subtitle: "Create an account today",
+      },
+    },
+  } as const;
+
   return (
     <ClerkProvider localization={localization}>
       <html lang="en">

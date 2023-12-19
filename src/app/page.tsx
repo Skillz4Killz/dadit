@@ -42,7 +42,7 @@ export default async function Home() {
                   <UpVoter
                     postId={post.id}
                     active={post.votes.some(
-                      (vote) => vote.upvoted && user.id === vote.userId,
+                      (vote) => vote.upvoted && user?.id === vote.userId,
                     )}
                   />
                   <p className="text-base  font-medium leading-6 text-gray-800">
@@ -54,7 +54,7 @@ export default async function Home() {
                   <DownVoter
                     postId={post.id}
                     active={post.votes.some(
-                      (vote) => !vote.upvoted && user.id === vote.userId,
+                      (vote) => !vote.upvoted && user?.id === vote.userId,
                     )}
                   />
                 </div>
