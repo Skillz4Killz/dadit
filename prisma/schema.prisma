@@ -12,19 +12,18 @@ datasource db {
 }
 
 model Comment {
-  id        Int       @id @default(autoincrement())
+  id        Int           @id @default(autoincrement())
   content   String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  author    User      @relation(fields: [authorId], references: [id])
-  authorId  Int
-  post      Post      @relation(fields: [postId], references: [id])
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  author    User          @relation(fields: [authorId], references: [userId])
+  authorId  String
+  post      Post          @relation(fields: [postId], references: [id])
   postId    Int
-  upvotes   Int       @default(0)
-  downvotes Int       @default(0)
-  parent    Comment?  @relation("ChildComments", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  parent    Comment?      @relation("ChildComments", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   parentId  Int?
-  replies   Comment[] @relation("ChildComments")
+  replies   Comment[]     @relation("ChildComments")
+  votes     CommentVote[]
 
   @@index([parentId])
   @@index([postId])
@@ -64,4 +63,14 @@ model Vote {
 
   @@id(name: "voteId", [userId, postId])
   @@index([postId])
+}
+
+model CommentVote {
+  userId    String
+  upvoted   Boolean
+  commentId Int
+  comment   Comment @relation(fields: [commentId], references: [id])
+
+  @@id(name: "voteId", [userId, commentId])
+  @@index([commentId])
 }

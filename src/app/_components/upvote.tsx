@@ -7,7 +7,8 @@ import { api } from "~/trpc/react";
 
 interface VoteProps {
   active?: boolean;
-  postId: number;
+  postId?: number;
+  commentId?: number;
 }
 
 export function UpVoter(props: VoteProps) {
@@ -16,7 +17,14 @@ export function UpVoter(props: VoteProps) {
   // In case the user signs out while on the page.
   if (!userId) return null;
 
+  console.log("check vote", props.postId, props.commentId, props.active);
+
   const upsertVote = api.post.upsertVote.useMutation({
+    onSuccess: () => {
+      router.refresh();
+    },
+  });
+  const upsertCommentVote = api.post.upsertCommentVote.useMutation({
     onSuccess: () => {
       router.refresh();
     },
@@ -26,11 +34,20 @@ export function UpVoter(props: VoteProps) {
     <div
       className="flex h-5 w-5 cursor-pointer items-center justify-center"
       onClick={() => {
-        upsertVote.mutate({
-          userId,
-          upvoted: true,
-          postId: props.postId,
-        });
+        if (props.postId) {
+          upsertVote.mutate({
+            userId,
+            upvoted: true,
+            postId: props.postId,
+          });
+        } else if (props.commentId) {
+          upsertCommentVote.mutate({
+            userId,
+            upvoted: true,
+            commentId: props.commentId,
+          });
+        }
+
         router.refresh();
       }}
     >
@@ -64,16 +81,30 @@ export function DownVoter(props: VoteProps) {
       router.refresh();
     },
   });
+  const upsertCommentVote = api.post.upsertCommentVote.useMutation({
+    onSuccess: () => {
+      router.refresh();
+    },
+  });
 
   return (
     <div
       className="flex h-5 w-5 cursor-pointer items-center justify-center"
       onClick={() => {
-        upsertVote.mutate({
-          userId,
-          upvoted: false,
-          postId: props.postId,
-        });
+        if (props.postId) {
+          upsertVote.mutate({
+            userId,
+            upvoted: false,
+            postId: props.postId,
+          });
+        } else if (props.commentId) {
+          upsertCommentVote.mutate({
+            userId,
+            upvoted: false,
+            commentId: props.commentId,
+          });
+        }
+
         router.refresh();
       }}
     >

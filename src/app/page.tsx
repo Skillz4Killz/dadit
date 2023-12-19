@@ -77,7 +77,7 @@ export default async function Home() {
                       Posted by {post.author.username} {timeAgo(post.createdAt)}
                     </p>
                   </div>
-                  <Link href={`/posts/${post.id}}`}>
+                  <Link href={`/posts/${post.id}`}>
                     <h2 className="text-base font-medium leading-6 text-gray-900">
                       {post.title}
                     </h2>

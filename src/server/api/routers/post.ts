@@ -29,6 +29,88 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
+  comment: publicProcedure
+    .input(
+      z.object({
+        content: z.string().min(10).max(4000),
+        authorId: z.string(),
+        postId: z.number(),
+        parentId: z.number().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.comment.create({
+        data: {
+          content: input.content,
+          authorId: input.authorId,
+          postId: input.postId,
+          parentId: input.parentId,
+        },
+      });
+    }),
+
+  getPostWithComments: publicProcedure
+    .input(
+      z.object({
+        postId: z.number(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      return ctx.db.post.findUnique({
+        where: { id: input.postId },
+        include: {
+          author: true,
+          votes: true,
+          comments: {
+            include: {
+              votes: true,
+              author: true,
+              replies: {
+                include: {
+                  author: true,
+                  votes: true,
+                  replies: {
+                    include: {
+                      author: true,
+                      votes: true,
+                      replies: {
+                        include: {
+                          author: true,
+                          votes: true,
+                          replies: true
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+    }),
+
+  getPost: publicProcedure
+    .input(
+      z.object({
+        postId: z.number(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      return ctx.db.post.findUnique({
+        where: { id: input.postId },
+        include: {
+          author: true,
+          votes: true,
+          comments: {
+            include: {
+              votes: true,
+            },
+          },
+        },
+      });
+    }),
+
   getLatest: publicProcedure.query(({ ctx }) => {
     return ctx.db.post.findMany({
       orderBy: { createdAt: "desc" },
@@ -95,6 +177,28 @@ export const postRouter = createTRPCRouter({
         create: {
           userId: input.userId,
           postId: input.postId,
+          upvoted: input.upvoted,
+        },
+        update: {
+          upvoted: input.upvoted,
+        },
+      });
+    }),
+
+  upsertCommentVote: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        commentId: z.number(),
+        upvoted: z.boolean(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.commentVote.upsert({
+        where: { voteId: { userId: input.userId, commentId: input.commentId } },
+        create: {
+          userId: input.userId,
+          commentId: input.commentId,
           upvoted: input.upvoted,
         },
         update: {
