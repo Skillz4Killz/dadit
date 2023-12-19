@@ -14,8 +14,6 @@ interface VoteProps {
 export function UpVoter(props: VoteProps) {
   const router = useRouter();
   const { userId } = useAuth();
-  // In case the user signs out while on the page.
-  if (!userId) return null;
 
   const upsertVote = api.post.upsertVote.useMutation({
     onSuccess: () => {
@@ -32,6 +30,9 @@ export function UpVoter(props: VoteProps) {
     <div
       className="flex h-5 w-5 cursor-pointer items-center justify-center"
       onClick={() => {
+        // In case the user signs out while on the page.
+        if (!userId) return null;
+
         if (props.postId) {
           upsertVote.mutate({
             userId,
@@ -71,8 +72,6 @@ export function UpVoter(props: VoteProps) {
 export function DownVoter(props: VoteProps) {
   const router = useRouter();
   const { userId } = useAuth();
-  // In case the user signs out while on the page.
-  if (!userId) return null;
 
   const upsertVote = api.post.upsertVote.useMutation({
     onSuccess: () => {
@@ -89,6 +88,9 @@ export function DownVoter(props: VoteProps) {
     <div
       className="flex h-5 w-5 cursor-pointer items-center justify-center"
       onClick={() => {
+        // In case the user signs out while on the page.
+        if (!userId) return null;
+
         if (props.postId) {
           upsertVote.mutate({
             userId,
