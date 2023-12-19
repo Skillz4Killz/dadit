@@ -17,8 +17,6 @@ export function UpVoter(props: VoteProps) {
   // In case the user signs out while on the page.
   if (!userId) return null;
 
-  console.log("check vote", props.postId, props.commentId, props.active);
-
   const upsertVote = api.post.upsertVote.useMutation({
     onSuccess: () => {
       router.refresh();

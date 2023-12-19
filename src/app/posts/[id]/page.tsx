@@ -27,8 +27,6 @@ export default async function PostPage({ params }: { params: { id: string } }) {
     });
   }
 
-  console.log(post);
-
   return (
     <main className="flex">
       <SideBar username={user ? `${user.firstName} ${user.lastName}` : null} />
